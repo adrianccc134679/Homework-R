@@ -1,0 +1,53 @@
+---
+title: "Tarea1_P1"
+author: "Adrian Castillo Castro Conde"
+date: "2023-05-24"
+
+---
+
+
+
+```{r}
+#Construya una matriz de 5 x 5 con valores aleatorios decimales que vayan en un rango de 160 a 200. Esta
+#matriz contendrá los pesos (en libras) de varias personas. Asigne un nombre descriptivo a esta matri.
+
+filas<-5
+columnas<-5
+numero_aleatorio <- runif(25, min = 160, max = 200)
+matriz5x5<-matrix(numero_aleatorio,byrow = TRUE,nrow = filas, ncol = columnas)
+
+#Asigne los meses enero a mayo como nombre de cada columna.
+#Asigne 5 nombres de persona, que sean aleatorios y que se utilicen como nombre de cada fila.
+Mes<-c("Enero","Febrero","Marzo","Abril","MAyo")
+Nombres<-c("Juan", "María", "Carlos", "Ana", "Pedro")
+rownames(matriz5x5)<-Mes
+colnames (matriz5x5)<-Nombres
+
+
+#Construya un vector que contenga el peso promedio de cada persona durante los meses de enero a mayo.
+promedioJuan<-mean(matriz5x5[,1])
+promedioMaria<-mean(matriz5x5[,2])
+promedioCarlos<-mean(matriz5x5[,3])
+promedioAna<-mean(matriz5x5[,4])
+promedioPedro<-mean(matriz5x5[,5])
+PromedioTotal<-c(promedioJuan,promedioMaria,promedioCarlos,promedioAna,promedioPedro)
+
+#Construya un vector que contenga el peso promedio en cada mes para todas las personas.
+promedioenero<-mean(matriz5x5[1,])
+promediofebrero<-mean(matriz5x5[2,])
+promediomarzo<-mean(matriz5x5[3,])
+promedioabril<-mean(matriz5x5[4,])
+promediomayo<-mean(matriz5x5[5,])
+PromedioTotalMes<-c(promedioenero,promediofebrero,promediomarzo,promedioabril,promediomayo,0)
+
+#Utilice cbind y rbind para agregar la columna y fila promedio.
+matrizresultante<-rbind(matriz5x5,PromedioTotal) 
+matrizresultantefinal<-cbind(matrizresultante,PromedioTotalMes)
+
+#Por último imprima la matriz resultante.
+print(matrizresultantefinal)
+```
+
+
+
+
