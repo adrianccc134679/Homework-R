@@ -1,0 +1,176 @@
+---
+title: "Homework_2"
+author: "Adrian Castillo Castro Conde"
+date: "2023-06-01"
+output: html_document
+---
+
+Estructura de una función
+Una función es un conjunto de instrucciones va tener valores de entrada y de salida, dicha función va manipular las entradas para obtener un resultado en la salida.
+
+La estructura que utiliza R a pesar que es similar a otros lenguajes esta va contar con partes fundamentales para su uso como entrada de argumentos el cual sirve para colocar variables de entrada a la función, esta parte puede ser opcional.  El cuerpo de la función que son todas las acciones que va realizar con las variables de entrada o con variables de control. y la salida de la función como el resultado de la manipulación de estas variables. 
+
+<nombre de la funcion> <- function(var_entrada){
+CUERPO
+CUERPO
+return(SALIDA)
+}
+
+
+Ejemplo de función
+
+```{r}
+saludar<-function(){
+  
+  print("hola")
+  
+}
+saludar()
+#regresa la funcion saludar
+
+```
+
+
+Argumentos de una función
+
+Las funciones en R se le van a colocar Valores de Entrada después de la instrucción function() entre los paréntesis van argumentos los cuales van a permitir personalizar la forma que se ejecuta la función. Estos argumentos son parámetros que entran a la función para que sean manipulados solamente dentro de la función.la forma que vamos a poder ver estos argumentos sera la siguiente forma:
+
+<nombre de la funcion> <-function(argumetno 1, argumento 2){
+
+}
+
+EJEMPLO DEL USAO DE ARGUMENTOS
+```{r}
+
+Area<-function(numerox,numeroy){
+  numeror<-numerox*numeroy
+  print(numeror)
+  
+}
+numeroy<-10
+numerox<-5
+Area(numerox,numeroy)
+#resultado la multiplicacion de numeroy y numerox
+
+```
+Ejemplo del uso de argumentos:
+```{r}
+x<-"hola_mundo"
+saludar_2<-function(){
+print(x)
+}
+saludar_2(x)
+
+
+saludar_3<-function(x="hola_mundo",y=0){
+print(paste(x,y))
+}
+saludar_3()
+
+```
+
+
+Los argumentos permiten personalizar la forma en que se ejecuta una función y pueden tener diferentes tipos de valores, como números, cadenas de texto, vectores, matrices u otros objetos.
+
+
+
+
+
+Argumentos por valor
+Al utilizar un argumento por valor, R va crear una copia del valor del argumento en el momento de la llamada, puedes manipular y hacer lo que quieras con la variable copiada, pero siempre estarás manejando una copia. De ahí que dentro de la función los valores se intercambian, pero al salir de la función, las copias se destruyen y a los originales no les ha pasado nada. 
+Un ejemplo de esto seria:
+
+
+
+
+```{r}
+sa<-"no estoy saludando"
+
+saluda_sa<-function(sa){
+sa<-"hola"
+print(sa)
+#resultado hola
+}
+saluda_sa(sa)
+#la salida es "hola" por lo que cambia el valor de sa solamente dentro de la funcion
+
+print(sa)
+#la salida es "no estoy saludando" porque ese era el valor original de la variable sa
+```
+
+
+Familia apply
+lapply
+El comando lapply() se utiliza para aplicar una funcion sobre una lista, su sintaxis va ser la siguiente:
+lapply(X, FUN)
+donde:
+    X es una lista 
+    FUN es la función a aplicar.
+Ejemplo del uso de lapply con funciones 
+
+
+```{r}
+
+#calculo de volumen del cilindros de 3 cm de altura
+radio<-list(3,5,6,2,4)
+Calculadora<-function(x){
+  return(x^2*pi*3)
+}
+
+resultado_vol<-lapply(radio, Calculadora)
+print(resultado_vol)
+```
+
+
+sapply
+a función sapply en R aplica una función a un vector o lista y devuelve un vector, una matriz o un array.
+sapply(X,  [ # Vector] FUN, [# Función a ser aplicada] simplify = TRUE,  [# Si FALSE devuelve una lista. Si "array" devuelve un array si es posible]    USE.NAMES = TRUE) 
+
+Para usar la función sapply en R, deberás especificar la lista o el vector que deseas iterar en el primer argumento y la función que quieres aplicar a cada elemento del vector en el segundo.
+
+Uso de sapply con funciones (ejemplos)
+
+```{r}
+#creamos la lista de nombres
+nombres<-list("juan","maria","pedro")
+di_tu_nombre<-function(nombres){
+#definimos la funcion que concatena el texto mio nombre es   
+return(paste("mi nombre es ",nombres))
+}
+
+
+presentador<-sapply(nombres, di_tu_nombre)
+print(presentador)
+
+```
+
+
+
+
+vapply
+vapply es una herramienta que sirve para aplicar una funcion sobre los elementos del vector y  diferencia del sapply esta es una herramienta que nos entrega un resultado mas especifico 
+sintaxis 
+vapply(X, [ # Vector] FUN,[# Función a ser aplicada]  FUN.VALUE, [#es el valor de retorno esperado por cada llamada a FUN])
+
+vapply proporciona un mejor control sobre la salida de las funciones se asegura que el resultado de vapply() tenga el formato y tipo de datos deseados. Esto puede ser útil cuando se trabaja con conjuntos de datos grandes y se quiere evitar sorpresas en la estructura de los resultados.
+
+
+Uso de vapply con funciones (ejemplos) 
+
+```{r}
+# Definir una matriz
+matriz <- matrix(c(2, 2, 2, 3, 3, 3), nrow = 2, ncol = 3)
+
+# Definir una función para calcular la suma de una fila
+calcular_suma <- function(fila) {
+  return(sum(fila))
+}
+
+# Utilizar vapply para aplicar la función a cada fila de la matriz
+sumas <- vapply(matriz, calcular_suma, numeric(1))
+
+# Imprimir el resultado
+print(sumas)
+
+```
+
