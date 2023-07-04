@@ -1,0 +1,214 @@
+---
+title: "Homework-5"
+author: "Adrian Castillo Castro Conde"
+date: "2023-07-04"
+---
+
+Cargue cada set de datos y nombrelo según cada archivo.
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+
+nombre_archivo1<-"questions.csv"
+nombre_archivo2<-"answers.csv"
+nombre_archivo3<-"tags.csv"
+nombre_archivo4<-"question_tags.csv"
+questions<-read.csv(nombre_archivo1,header = TRUE, sep = ",",dec = ".",fill = TRUE )
+answers<-read.csv(nombre_archivo2,header = TRUE, sep = ",",dec = ".",fill = TRUE )
+tags<-read.csv(nombre_archivo3,header = TRUE, sep = ",",dec = ".",fill = TRUE )
+question_tags<-read.csv(nombre_archivo4,header = TRUE, sep = ",",dec = ".",fill = TRUE )
+
+
+```
+
+
+1. Left-joining questions and tags
+Utilice left_joins en este ejercicio para asegurarse de mantener todas las preguntas, incluso
+aquellas sin un tag correspondiente
+
+Relacione questions y question_tags usando las columnas id y question_id,
+respectivamente.
+
+Relacione questions y question_tags usando las columnas id y question_id,
+respectivamente.
+
+```{r}
+
+ex1.1<-questions%>%
+  left_join(question_tags,by=c("id"="tag_id"))%>%
+  arrange(question_id)
+  
+print(ex1.1)
+```
+
+Agregue una relación más para la tabla tags.
+
+```{r}
+
+ex1.2<-questions%>%
+  left_join(question_tags,by=c("id"="tag_id"))%>%
+  left_join(tags,by="id")%>%
+  arrange(question_id)
+print(ex1.2)
+```
+
+Utilice replace_na para cambiar los NA en la columna tag_name a "only-r".
+
+```{r}
+
+
+ex1.3<-questions%>%
+  left_join(question_tags,by=c("id"="tag_id"))%>%
+  left_join(tags,by="id")%>%
+  mutate(tag_name = replace_na(tag_name, "only-r"))%>%
+  arrange(question_id)
+print(ex1.3)
+
+```
+
+1.4. Por último, almacene el resultado en la variable questions_with_tags.
+
+```{r}
+
+questions_with_tags<-questions%>%
+  left_join(question_tags,by=c("id"="tag_id"))%>%
+  left_join(tags,by="id")%>%
+  mutate(tag_name = replace_na(tag_name, "only-r"))
+```
+2. Comparing scores across tags
+
+Realice un breve análisis, para ello utilice verbos de la familia dplyr como group by, summarize,
+arrange y averigue el score promedio de las preguntas más frecuentes.
+
+Utilice questions_with_tags y aplique group_by para la variable tag_name.
+
+
+```{r}
+
+ex2.1<-questions_with_tags%>%
+  group_by(tag_name)
+print(ex2.1)
+
+
+```
+
+Aplique summarize para obtener el score promedio de cada pregunta y asígnele el
+nombre mean_score.
+
+```{r}
+
+ex2.2<-questions_with_tags%>%
+  group_by(question_id) %>% 
+  summarize(mean_score = mean(score))
+print(ex2.2)
+
+
+```
+
+
+Ordene mean_score en forma descendente
+
+```{r}
+ex2.3<-questions_with_tags%>%
+  group_by(question_id) %>% 
+  summarize(mean_score = mean(score))%>% 
+  arrange(desc(mean_score))
+print(ex2.3)
+```
+
+
+Finding gaps between questions and answers
+Ahora uniremos questions con answers. Asegúrese de explorar las tablas y sus columnas en la
+consola antes de comenzar el ejercicio.
+
+
+```{r}
+ex3.1<-questions%>%
+  inner_join(answers,by=c("id"="question_id"), suffix = c("_question", "_answer"))
+  
+print(ex3.1)
+
+
+```
+
+Agregue una nueva columna utilizando la función mutate. La nueva columna se llamará
+gap y contendrá la resta de creation_date_answer y creation_date_question.
+(creation_date_answer - creation_date_question).
+
+```{r}
+
+ex3.2<-questions%>%
+  inner_join(answers,by=c("id"="question_id"), suffix = c("_question", "_answer"))%>%
+  mutate(gap = as.Date(creation_date_answer)-as.Date(creation_date_question))
+print(ex3.2)
+```
+
+4. Joining question and answer counts
+También podemos determinar cuántas preguntas realmente arrojan respuestas. Si contamos el
+número de respuestas para cada pregunta, podemos unir los conteos de respuestas con la tabla
+de preguntas.
+
+```{r}
+ex4<-answers%>%
+  inner_join(questions,by=c("question_id"="id"), suffix = c("_answer", "_question"))
+
+```
+
+4.1. Cuente y ordene la columna question_id en la tabla de answers, luego almacene el
+resultado en la variable answer_counts.
+```{r}
+
+answer_counts<-answers%>%
+  count(question_id)%>%
+  arrange(question_id)
+print(answer_counts)
+```
+Relacione la tabla questions con answer_counts (utilice left_join).
+```{r}
+ex4.2<-questions%>%
+  left_join(answer_counts,by=c("id"="question_id"))
+
+print(ex4.2)
+```
+
+Reemplace los valores NA en la columna n con ceros.
+
+```{r}
+
+ex4.3<-questions%>%
+  left_join(answer_counts,by=c("id"="question_id"))%>%
+  mutate(n = replace_na(n,0))
+
+print(ex4.3)
+```
+
+Por último almacene el resultado en la variable question_answer_counts
+
+```{r}
+
+question_answer_counts<-questions%>%
+  left_join(answer_counts,by=c("id"="question_id"))%>%
+  mutate(n = replace_na(n,0))
+```
+. Joining questions, answers, and tags
+Combine question_tags con question_answer_counts usando inner_join.
+```{r}
+question_tags%>%
+  inner_join(question_answer_counts,by=c("question_id"="id"))
+
+```
+
+Ahora, use otro inner_join para agregar la tabla tags.
+
+```{r}
+
+question_tags%>%
+  inner_join(question_answer_counts,by=c("question_id"="id"))%>%
+  inner_join(tags,by=c("tag_id"="id"))
+
+
+
+```
+
